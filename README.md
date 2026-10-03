@@ -1,18 +1,37 @@
 # 养老机器人补贴履约
 
-本仓库保存养老机器人补贴履约的领域词汇、事件约定与基础校验代码，便于各参与方在后续开发中统一对象身份和版本语义。
+本仓库保存养老机器人补贴履约的领域词汇、事件约定、事件重放投影与校验代码，
+供民政、社区、财政与设备厂商在统一对象身份和版本语义下对接。
 
 ## 目录
 
-- `contracts/domain.schema.json`：领域事件信封及稳定枚举。
-- `data/sample.json`：一条可用于联调的中文业务样例。
-- `src/`：事件基础字段校验。
-- `tests/`：领域资料的一致性检查。
+- `contracts/domain.schema.json`：领域事件信封及稳定枚举（只追加）。
+- `docs/domain-model.md`：聚合、事件负载、补贴计算、互斥与访问控制约定。
+- `data/sample.json`：单条中文业务样例。
+- `data/scenario_audit.json`：财政抽查错账场景的完整可重放事件流。
+- `src/`：
+  - `contracts.py` 事件标识唯一清单；`validator.py` 信封校验；
+  - `model.py` 政策版本、资格门槛、购置/租赁补贴与冲正计算；
+  - `identity.py` 跨渠道身份待核对关联与互斥确认；
+  - `replay.py` 只追加事件存储与状态重放；
+  - `ledger.py` 资金台账（年度额度、发放触发、部分冲正）；
+  - `views.py` 老人/财政/社区/厂商字段级访问视图。
+- `tests/`：契约、规则、身份、台账与抽查场景的一致性检查。
 
-当前核心对象为benefit_policy、applicant_eligibility、device_service、funding_entry，已登记事件为ELIGIBILITY_VERIFIED、DEVICE_DELIVERED、SERVICE_CONFIRMED、SUBSIDY_RELEASED、FUNDS_REVERSED。这些资料只约束基础交换格式，具体业务服务需要在保持兼容的前提下继续建设。
+## 关键语义
+
+- 跨渠道证件不一致只形成**待核对关联**，人工确认后才可能阻断资金；
+  不同互斥组的政策对同一老人合法并用。
+- 购置按优惠后价格比例与单件上限计；租赁按目录日租价 × 实际服务期计；
+  年度上限跨件累计。
+- 交付与持续服务分别触发付款；退货/停用只冲回未履行部分。
+- 召回沿责任链定位**当前责任方**，不是最初购买人。
+- 厂商读不到医疗明细与资金数据，社区看不到完整财政资料。
 
 ## 本地检查
 
 ```bash
 python3 -m unittest discover -s tests
 ```
+
+27 个测试覆盖信封契约、金额/冲正规则、身份互斥状态机、额度边界与抽查场景重放。

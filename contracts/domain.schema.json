@@ -1,6 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "养老机器人补贴履约领域事件",
+  "description": "事件信封与稳定事件标识。枚举只允许追加、不得复用或改义；负载字段约定见 docs/domain-model.md。",
   "type": "object",
   "required": [
     "event_id",
@@ -23,7 +24,20 @@
         "DEVICE_DELIVERED",
         "SERVICE_CONFIRMED",
         "SUBSIDY_RELEASED",
-        "FUNDS_REVERSED"
+        "FUNDS_REVERSED",
+        "POLICY_PUBLISHED",
+        "CATEGORY_CERTIFIED",
+        "CONTRACT_REGISTERED",
+        "RESPONSIBLE_PARTY_CHANGED",
+        "FAULT_REPORTED",
+        "REPAIR_COMPLETED",
+        "RECALL_ISSUED",
+        "DEVICE_RETURNED",
+        "SERVICE_TERMINATED",
+        "IDENTITY_LINK_SUGGESTED",
+        "IDENTITY_LINK_CONFIRMED",
+        "IDENTITY_LINK_DISMISSED",
+        "MUTEX_REVIEW_RESOLVED"
       ]
     },
     "aggregate_type": {
