@@ -1,0 +1,344 @@
+{
+  "description": "财政抽查案例：同一老人经电商渠道领取外骨骼购置补贴，又以另一套证件信息经社区渠道申请看护机器人租赁补贴；租赁设备已退货，资金仍按全年服务结算。本文件记录两个政策版本的参考数据与全部履约事件，可用于重放核对。",
+  "policies": [
+    {
+      "policy_id": "P-EXO-2026",
+      "version": 1,
+      "region": "滨江市",
+      "min_age": 65,
+      "care_levels": ["中度", "重度"],
+      "low_income_required": false,
+      "annual_cap": 20000,
+      "exclusion_group": "mobility_device",
+      "categories": {
+        "exoskeleton": {
+          "mode": "purchase",
+          "purchase_ratio": 0.5,
+          "per_item_cap": 15000
+        }
+      }
+    },
+    {
+      "policy_id": "P-CARE-2026",
+      "version": 1,
+      "region": "滨江市",
+      "min_age": 60,
+      "care_levels": ["轻度", "中度", "重度"],
+      "low_income_required": true,
+      "annual_cap": 12000,
+      "exclusion_group": "care_service",
+      "categories": {
+        "care_robot": {
+          "mode": "rental",
+          "catalog_period_price": 800,
+          "period_days": 30,
+          "per_item_cap": 9600
+        }
+      }
+    }
+  ],
+  "events": [
+    {
+      "event_id": "evt-case-01",
+      "event_type": "ELIGIBILITY_VERIFIED",
+      "aggregate_type": "applicant_eligibility",
+      "aggregate_id": "A-WANG-EC",
+      "occurred_at": "2026-01-05T09:30:00+08:00",
+      "version": 1,
+      "summary": "电商渠道资格确认：王秀兰申请外骨骼购置补贴，通过",
+      "payload": {
+        "kind": "eligibility",
+        "channel": "ecommerce",
+        "document_ref": "doc-sha256-9f2c",
+        "name": "王秀兰",
+        "birth_date": "1954-03-12",
+        "age": 71,
+        "care_level": "中度",
+        "low_income": true,
+        "region": "滨江市",
+        "policy_id": "P-EXO-2026",
+        "policy_version": 1,
+        "category": "exoskeleton",
+        "eligible": true,
+        "problems": [],
+        "agent_refs": ["A-WANG-SON"]
+      }
+    },
+    {
+      "event_id": "evt-case-02",
+      "event_type": "DEVICE_DELIVERED",
+      "aggregate_type": "device_service",
+      "aggregate_id": "EXO-2026-0001",
+      "occurred_at": "2026-01-08T10:00:00+08:00",
+      "version": 1,
+      "summary": "外骨骼 EXO-2026-0001 交付，合同 CT-EC-1001",
+      "payload": {
+        "category": "exoskeleton",
+        "contract_id": "CT-EC-1001",
+        "contract_type": "purchase",
+        "price_after_discount": 24000,
+        "applicant_ref": "A-WANG-EC",
+        "party": "A-WANG-EC",
+        "policy_id": "P-EXO-2026",
+        "policy_version": 1
+      }
+    },
+    {
+      "event_id": "evt-case-03",
+      "event_type": "SUBSIDY_RELEASED",
+      "aggregate_type": "funding_entry",
+      "aggregate_id": "F-0001",
+      "occurred_at": "2026-01-08T10:05:00+08:00",
+      "version": 1,
+      "summary": "外骨骼购置补贴发放 12000（24000×50%，交付触发）",
+      "payload": {
+        "applicant_ref": "A-WANG-EC",
+        "policy_id": "P-EXO-2026",
+        "policy_version": 1,
+        "serial_no": "EXO-2026-0001",
+        "contract_id": "CT-EC-1001",
+        "trigger": "delivery",
+        "amount": 12000,
+        "exclusion_group": "mobility_device"
+      }
+    },
+    {
+      "event_id": "evt-case-04",
+      "event_type": "ELIGIBILITY_VERIFIED",
+      "aggregate_type": "applicant_eligibility",
+      "aggregate_id": "A-WANG-COM",
+      "occurred_at": "2026-01-10T14:00:00+08:00",
+      "version": 1,
+      "summary": "社区渠道资格确认：王秀兰以另一套证件申请看护机器人租赁补贴，通过",
+      "payload": {
+        "kind": "eligibility",
+        "channel": "community",
+        "document_ref": "doc-sha256-71ab",
+        "name": "王秀兰",
+        "birth_date": "1954-03-12",
+        "age": 71,
+        "care_level": "中度",
+        "low_income": true,
+        "region": "滨江市",
+        "policy_id": "P-CARE-2026",
+        "policy_version": 1,
+        "category": "care_robot",
+        "eligible": true,
+        "problems": [],
+        "agent_refs": ["A-WANG-SON"]
+      }
+    },
+    {
+      "event_id": "evt-case-05",
+      "event_type": "ELIGIBILITY_VERIFIED",
+      "aggregate_type": "applicant_eligibility",
+      "aggregate_id": "A-WANG-EC",
+      "occurred_at": "2026-01-10T14:00:30+08:00",
+      "version": 2,
+      "summary": "跨渠道身份待核对：A-WANG-EC 与 A-WANG-COM",
+      "payload": {
+        "kind": "identity_association",
+        "with": "A-WANG-COM",
+        "status": "pending",
+        "evidence": "姓名与出生日期一致，证件与申请渠道不同",
+        "by": "system-auto"
+      }
+    },
+    {
+      "event_id": "evt-case-06",
+      "event_type": "DEVICE_DELIVERED",
+      "aggregate_type": "device_service",
+      "aggregate_id": "CR-2026-0009",
+      "occurred_at": "2026-01-12T09:00:00+08:00",
+      "version": 1,
+      "summary": "看护机器人 CR-2026-0009 交付，租赁合同 CT-COM-2002",
+      "payload": {
+        "category": "care_robot",
+        "contract_id": "CT-COM-2002",
+        "contract_type": "rental",
+        "price_after_discount": 0,
+        "applicant_ref": "A-WANG-COM",
+        "party": "A-WANG-COM",
+        "policy_id": "P-CARE-2026",
+        "policy_version": 1
+      }
+    },
+    {
+      "event_id": "evt-case-07",
+      "event_type": "SUBSIDY_RELEASED",
+      "aggregate_type": "funding_entry",
+      "aggregate_id": "F-0002",
+      "occurred_at": "2026-01-12T09:05:00+08:00",
+      "version": 1,
+      "summary": "看护机器人租赁补贴按全年服务一次性结算 9600",
+      "payload": {
+        "applicant_ref": "A-WANG-COM",
+        "policy_id": "P-CARE-2026",
+        "policy_version": 1,
+        "serial_no": "CR-2026-0009",
+        "contract_id": "CT-COM-2002",
+        "trigger": "service_period",
+        "period": {"start": "2026-01-12T00:00:00+08:00", "end": "2027-01-12T00:00:00+08:00"},
+        "amount": 9600,
+        "exclusion_group": "care_service"
+      }
+    },
+    {
+      "event_id": "evt-case-08",
+      "event_type": "SERVICE_CONFIRMED",
+      "aggregate_type": "device_service",
+      "aggregate_id": "CR-2026-0009",
+      "occurred_at": "2026-02-11T18:00:00+08:00",
+      "version": 2,
+      "summary": "看护机器人第 1 期服务确认（01-12~02-11）",
+      "payload": {
+        "kind": "service_period",
+        "period": {"start": "2026-01-12T00:00:00+08:00", "end": "2026-02-11T00:00:00+08:00"},
+        "note": "第 1 期"
+      }
+    },
+    {
+      "event_id": "evt-case-09",
+      "event_type": "SERVICE_CONFIRMED",
+      "aggregate_type": "device_service",
+      "aggregate_id": "CR-2026-0009",
+      "occurred_at": "2026-03-12T18:00:00+08:00",
+      "version": 3,
+      "summary": "看护机器人第 2 期服务确认（02-11~03-12）",
+      "payload": {
+        "kind": "service_period",
+        "period": {"start": "2026-02-11T00:00:00+08:00", "end": "2026-03-12T00:00:00+08:00"},
+        "note": "第 2 期"
+      }
+    },
+    {
+      "event_id": "evt-case-10",
+      "event_type": "SERVICE_CONFIRMED",
+      "aggregate_type": "device_service",
+      "aggregate_id": "CR-2026-0009",
+      "occurred_at": "2026-03-15T10:00:00+08:00",
+      "version": 4,
+      "summary": "看护机器人行走模块故障，开始维修",
+      "payload": {
+        "kind": "repair_start",
+        "arrangement": "备用机 CR-LOAN-310 当日替换，服务不中断",
+        "note": "行走模块故障"
+      }
+    },
+    {
+      "event_id": "evt-case-11",
+      "event_type": "SERVICE_CONFIRMED",
+      "aggregate_type": "device_service",
+      "aggregate_id": "CR-2026-0009",
+      "occurred_at": "2026-03-22T09:00:00+08:00",
+      "version": 5,
+      "summary": "看护机器人维修结束，换回主机",
+      "payload": {
+        "kind": "repair_end",
+        "note": "行走模块已更换"
+      }
+    },
+    {
+      "event_id": "evt-case-12",
+      "event_type": "SERVICE_CONFIRMED",
+      "aggregate_type": "device_service",
+      "aggregate_id": "CR-2026-0009",
+      "occurred_at": "2026-04-11T18:00:00+08:00",
+      "version": 6,
+      "summary": "看护机器人第 3 期服务确认（03-12~04-11）",
+      "payload": {
+        "kind": "service_period",
+        "period": {"start": "2026-03-12T00:00:00+08:00", "end": "2026-04-11T00:00:00+08:00"},
+        "note": "第 3 期"
+      }
+    },
+    {
+      "event_id": "evt-case-13",
+      "event_type": "SERVICE_CONFIRMED",
+      "aggregate_type": "device_service",
+      "aggregate_id": "EXO-2026-0001",
+      "occurred_at": "2026-04-15T11:00:00+08:00",
+      "version": 2,
+      "summary": "外骨骼保管责任转移至滨江社区康复站",
+      "payload": {
+        "kind": "transferred",
+        "party": "滨江社区康复站",
+        "note": "老人白天在康复站训练，设备保管责任转移"
+      }
+    },
+    {
+      "event_id": "evt-case-14",
+      "event_type": "SERVICE_CONFIRMED",
+      "aggregate_type": "device_service",
+      "aggregate_id": "CR-2026-0009",
+      "occurred_at": "2026-04-20T10:00:00+08:00",
+      "version": 7,
+      "summary": "看护机器人责任转移至滨江社区康养服务站",
+      "payload": {
+        "kind": "transferred",
+        "party": "滨江社区康养服务站",
+        "note": "老人短期托养，设备随迁"
+      }
+    },
+    {
+      "event_id": "evt-case-15",
+      "event_type": "SERVICE_CONFIRMED",
+      "aggregate_type": "device_service",
+      "aggregate_id": "CR-2026-0009",
+      "occurred_at": "2026-05-01T00:00:00+08:00",
+      "version": 8,
+      "summary": "看护机器人退货回收",
+      "payload": {
+        "kind": "returned",
+        "recovered_by": "安康机器人公司",
+        "note": "老人随子女迁居，退租"
+      }
+    },
+    {
+      "event_id": "evt-case-16",
+      "event_type": "ELIGIBILITY_VERIFIED",
+      "aggregate_type": "applicant_eligibility",
+      "aggregate_id": "A-WANG-EC",
+      "occurred_at": "2026-05-03T10:00:00+08:00",
+      "version": 3,
+      "summary": "民政核对确认：A-WANG-EC 与 A-WANG-COM 为同一人",
+      "payload": {
+        "kind": "identity_association",
+        "with": "A-WANG-COM",
+        "status": "confirmed",
+        "evidence": "人脸核身与户籍信息一致",
+        "by": "民政局-李某"
+      }
+    },
+    {
+      "event_id": "evt-case-17",
+      "event_type": "FUNDS_REVERSED",
+      "aggregate_type": "funding_entry",
+      "aggregate_id": "F-0002",
+      "occurred_at": "2026-05-03T10:30:00+08:00",
+      "version": 2,
+      "summary": "退货停用，冲回 2026-05-01 之后未履行部分 6733.15",
+      "payload": {
+        "amount": 6733.15,
+        "reason": "return_unfulfilled",
+        "serial_no": "CR-2026-0009",
+        "applicant_ref": "A-WANG-COM",
+        "note": "全年 365 天已履行 109 天，冲回未履行 256 天"
+      }
+    },
+    {
+      "event_id": "evt-case-18",
+      "event_type": "SERVICE_CONFIRMED",
+      "aggregate_type": "device_service",
+      "aggregate_id": "EXO-2026-0001",
+      "occurred_at": "2026-05-10T09:00:00+08:00",
+      "version": 3,
+      "summary": "外骨骼厂商召回更换电池模组，当前责任方：滨江社区康复站",
+      "payload": {
+        "kind": "recall",
+        "recall_id": "RC-2026-017",
+        "note": "电池模组召回"
+      }
+    }
+  ]
+}
